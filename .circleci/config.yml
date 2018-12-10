@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run: pipenv install
+      - run: cp config.ini.dist config.ini
+      - run: pipenv run python -m unittest discover
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
