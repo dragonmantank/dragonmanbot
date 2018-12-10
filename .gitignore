@@ -1,0 +1,4 @@
+/.vscode/
+/bot.db
+/config.ini
+/docker-compose.override.yml
