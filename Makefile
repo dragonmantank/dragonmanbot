@@ -7,5 +7,5 @@ run:
 	python run.py
 
 test:
-	python -m unittest discover
+	python -m unittest discover -b
 

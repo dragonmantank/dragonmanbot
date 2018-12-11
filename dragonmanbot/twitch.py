@@ -14,6 +14,8 @@ class Dragonmanbot:
         self.commands = {}
         self.listeners = []
 
+        self.register_command("!cmd", self.command_listcommands)
+
     def chat(self, message):
         self.socket.send("PRIVMSG #{} :{}\r\n".format(self.channel, message).encode("utf-8"))
 
@@ -31,7 +33,7 @@ class Dragonmanbot:
         message = message_format.sub("", response)
         message = message.rstrip()
 
-        return {"username": username, "message": message}
+        return {"username": username, "message": message, "raw": response}
 
     def process_message(self, message):
         for function in self.listeners:
@@ -47,6 +49,11 @@ class Dragonmanbot:
                     response = function(user_command.group(2), message)
                     if response != None:
                         self.chat(response)
+
+    def command_listcommands(self, command, message):
+        commands = list(self.commands.keys())
+        command_list = ", ".join(commands)
+        return f'@{message["username"]} here are the available commands: {command_list}'
 
     def register_command(self, command, function):
         self.commands[command] = function

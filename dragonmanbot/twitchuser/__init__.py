@@ -24,6 +24,10 @@ class TwitchUserRepository:
             session.commit()
 
         return user
+    
+    def save(self, user):
+        session.add(user)
+        session.commit()
 
 
 repository = TwitchUserRepository()
