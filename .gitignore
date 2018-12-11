@@ -2,3 +2,4 @@
 /bot.db
 /config.ini
 /docker-compose.override.yml
+__pycache__/

@@ -5,5 +5,8 @@ nick:
 channel: 
 oauth: 
 
+[discord]
+token: 
+
 [database]
 dsn: sqlite:///bot.db
