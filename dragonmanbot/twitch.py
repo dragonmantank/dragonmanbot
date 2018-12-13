@@ -12,6 +12,7 @@ class Dragonmanbot:
         self.channel = channel
         self.oauth = oauth
         self.commands = {}
+        self.command_aliases = {}
         self.listeners = []
 
         self.register_command("!cmd", self.command_listcommands)
@@ -44,11 +45,14 @@ class Dragonmanbot:
         command_format = r"^(!\w+)(.*)"
         user_command = re.search(command_format, message["message"])
         if user_command != None:
-            for command, function in self.commands.items():
-                if user_command.group(1) == command:
-                    response = function(user_command.group(2), message)
-                    if response != None:
-                        self.chat(response)
+            command = user_command.group(1)
+            if command in self.command_aliases:
+                command = self.command_aliases[command]
+
+            if command in self.commands:
+                response = self.commands[command](user_command.group(2).split(), message)
+                if response != None:
+                    self.chat(response)
 
     def command_listcommands(self, command, message):
         commands = list(self.commands.keys())
@@ -57,6 +61,9 @@ class Dragonmanbot:
 
     def register_command(self, command, function):
         self.commands[command] = function
+
+    def register_command_alias(self, alias, command):
+        self.command_aliases[alias] = command
 
     def register_listener(self, function):
         self.listeners.append(function)
