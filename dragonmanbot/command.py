@@ -14,6 +14,13 @@ def command_namerequest(command, message):
     
     return f"@{message['username']} You need at least 500 gold to request a name in the game"
 
+def command_gamerequest(game, message):
+    game = ' '.join(game)
+    game_file = open('games.txt', 'a')
+    game_file.write(game + "\n")
+    game_file.close()
+    return f"@{message['username']} Game has been added to the list"
+
 def command_coinflip(arguments, message):
     user = dragonmanbot.twitchuser.repository.findByUsername(message["username"])
     if len(arguments) == 0:

@@ -20,5 +20,6 @@ if __name__ == "__main__":
     twitchBot.register_command_alias("!coins", "!hoard")
     twitchBot.register_command("!discord", command.command_discord)
     twitchBot.register_command("!name", command.command_namerequest)
+    twitchBot.register_command("!gamerequest", command.command_gamerequest)
     twitchBot.register_command("!coin", command.command_coinflip)
     twitchBot.run()

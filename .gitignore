@@ -3,3 +3,6 @@
 /config.ini
 /docker-compose.override.yml
 __pycache__/
+/.env
+/games.txt
+/notices.txt
