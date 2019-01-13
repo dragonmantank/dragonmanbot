@@ -51,7 +51,7 @@ def announce_sub(message):
         months = int(parsed.group(2).rstrip())
 
         user = twitchuser.repository.findByUsername(username)
-        user.gold = user.gold + 1000
+        user.gold = user.gold + 10000
         session.add(user)
         session.commit()
 
@@ -63,3 +63,18 @@ def announce_sub(message):
                 return f"{username} has rejoined the clan for another month!"
 
         return f"{username} has joined the clan!"
+
+def record_bits(message):
+    parsed = re.search(r"bits=(\d+);.*display-name=(\w+);", message["raw"])
+    if parsed:
+        username = parsed.group(2)
+        bits = int(parsed.group(1))
+
+        user = twitchuser.repository.findByUsername(username)
+        user.gold = user.gold + (bits * 10)
+        session.add(user)
+        session.commit()
+
+        log = open("latest_bits.txt", "w")
+        log.write(user.username + "\r")
+        log.close()

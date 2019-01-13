@@ -57,3 +57,15 @@ class TestListeners(unittest.TestCase):
                 m.assert_called_once_with("latest_sub.txt", "w")
                 handle = m()
                 handle.write.assert_called_once_with('testuser\r')
+
+    def test_record_bits(self):
+        with mock.patch("dragonmanbot.twitchuser.TwitchUserRepository.findByUsername") as mocked_return:
+            m = mock_open()
+            with patch("builtins.open", unittest.mock.mock_open()) as m:
+                mocked_return.return_value = twitchuser.TwitchUser(username="testuser", gold=100)
+                message = "@badges=bits/100;bits=100;color=#8A2BE2;display-name=testuser;emotes=;flags=;id=712ab0ee-b727-4aa5-9b89-999999999999;mod=0;room-id=68573026;subscriber=0;tmi-sent-ts=1546840747770;turbo=0;user-id=99999999;user-type= :testuser!testuser@testuser.tmi.twitch.tv PRIVMSG #dragonmantank :cheer100"
+                listener.record_bits({"username": "", "message": "", "raw": message})
+
+                m.assert_called_once_with("latest_bits.txt", "w")
+                handle = m()
+                handle.write.assert_called_once_with('testuser\r')
