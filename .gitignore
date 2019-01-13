@@ -5,4 +5,10 @@
 __pycache__/
 /.env
 /games.txt
+/chatlog.txt
+/latest_bits.txt
+/latest_sub.txt
+/names.txt
+/notes.txt
 /notices.txt
+*.pyc

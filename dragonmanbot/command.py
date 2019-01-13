@@ -7,12 +7,12 @@ def command_namerequest(command, message):
         user.gold = user.gold - 500
         dragonmanbot.twitchuser.repository.save(user)
         log = open("names.txt", "a")
-        log.write(user.username)
+        log.write(user.username + "\r")
         log.close()
 
         return f"@{message['username']} You've just made the list! List3"
     
-    return f"@{message['username']} You need at least 500 gold to request a name in the game"
+    return f"@{message['username']} You need at least 500 gold to request a name in the game (check with !hoard)"
 
 def command_gamerequest(game, message):
     game = ' '.join(game)

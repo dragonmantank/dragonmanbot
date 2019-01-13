@@ -5,6 +5,7 @@ from datetime import date
 from datetime import time
 from datetime import timedelta
 import random
+import re
 
 NEXT_NOTICE = datetime.now()
 NEXT_NOTICE_COUNTER = 20
@@ -42,3 +43,23 @@ def log_chat(message):
     log = open("chatlog.txt", "a")
     log.write(message["raw"])
     log.close()
+
+def announce_sub(message):
+    parsed = re.search(r"display-name=(\w+);.*;msg-id=sub;.*msg-param-months=(\d)", message["raw"])
+    if parsed:
+        username = parsed.group(1)
+        months = int(parsed.group(2).rstrip())
+
+        user = twitchuser.repository.findByUsername(username)
+        user.gold = user.gold + 1000
+        session.add(user)
+        session.commit()
+
+        log = open("latest_sub.txt", "w")
+        log.write(user.username + "\r")
+        log.close()
+
+        if months > 1:
+                return f"{username} has rejoined the clan for another month!"
+
+        return f"{username} has joined the clan!"

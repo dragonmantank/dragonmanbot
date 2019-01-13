@@ -2,7 +2,7 @@ import configparser
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-config = configparser.ConfigParser();
+config = configparser.ConfigParser()
 config.read('config.ini')
 
 engine = create_engine(config["database"]["dsn"])

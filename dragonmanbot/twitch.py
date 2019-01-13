@@ -23,16 +23,18 @@ class Dragonmanbot:
     def connect(self):
         self.socket = socket.socket()
         self.socket.connect((self.host, self.port))
+        self.socket.send("CAP REQ :twitch.tv/commands twitch.tv/membership twitch.tv/tags\r\n".encode("utf-8"))
         self.socket.send("PASS {}\r\n".format(self.oauth).encode("utf-8"))
         self.socket.send("NICK {}\r\n".format(self.nick).encode("utf-8"))
         self.socket.send("JOIN #{}\r\n".format(self.channel).encode("utf-8"))
         print("Connected")
 
     def parse(self, response):
-        message_format = re.compile(r"^:\w+!\w+@\w+\.tmi\.twitch\.tv PRIVMSG #\w+ :")
-        username = re.search(r"\w+", response).group(0) # return the entire match
-        message = message_format.sub("", response)
-        message = message.rstrip()
+        username = message = ''
+        parsed = re.search(r"display-name=(\w+);.*PRIVMSG #\w+ :(.*)$", response)
+        if parsed:
+            username = parsed.group(1)
+            message = parsed.group(2).rstrip()
 
         return {"username": username, "message": message, "raw": response}
 
@@ -88,6 +90,10 @@ class Dragonmanbot:
                     self.socket.send("PONG :tmi.twitch.tv\r\n".encode("utf-8"))
                 else:
                     message = self.parse(response)
-                    print(f'{message["username"]}: {message["message"]}')
+                    if message['username'] and message['message']:
+                        print(f'{message["username"]}: {message["message"]}')
+                    else:
+                        print(f'{message["raw"]}')
+
                     self.process_message(message)
             time.sleep(0.1)                    
