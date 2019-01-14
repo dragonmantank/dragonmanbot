@@ -1,3 +1,5 @@
+from dragonmanbot.twitch import moderator
+from dragonmanbot import twitch_http_client
 import dragonmanbot
 import random
 
@@ -49,3 +51,14 @@ def command_hoard(command, message):
 
 def command_discord(command, message):
     return f'Want to hang out on discord? Head over to https://discord.gg/PZ9fX2g !'
+
+@moderator
+def command_shoutout(args, message):
+    if not args:
+        return f"@{message['username']} You kinda need to supply a username to shout someone out"
+
+    username = args[0]
+    users = twitch_http_client.users.translate_usernames_to_ids(username)
+    stream = twitch_http_client.channels.get_by_id(users[0].id)
+
+    return f"Let's give a shoutout to {username}! They were last playing '{stream.game}'. Check them out at https://twitch.tv/{username}."

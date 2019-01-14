@@ -4,6 +4,20 @@ import errno
 import sys
 import re
 
+def moderator(func):
+    def is_mod(args, command):
+        allowed = ['broadcaster', 'admin', 'moderator']
+
+        parsed = re.search(r"\@badges=(.*?);", command["raw"])
+        badgesRaw = parsed.group(1)
+
+        for badgeData in badgesRaw.split(','):
+            badgeName = badgeData.split('/')[0]
+            if badgeName in allowed:
+                return func(args, command)
+
+    return is_mod
+
 class Dragonmanbot:
     def __init__(self, nick, channel, oauth, host="irc.twitch.tv", port="6667"):
         self.host = host
