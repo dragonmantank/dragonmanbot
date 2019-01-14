@@ -1,4 +1,4 @@
-from dragonmanbot import session, twitchuser
+from dragonmanbot import session, twitchuser, twitch_http_client
 import collections
 from datetime import datetime
 from datetime import date
@@ -45,7 +45,7 @@ def log_chat(message):
     log.close()
 
 def announce_sub(message):
-    parsed = re.search(r"display-name=(\w+);.*;msg-id=sub;.*msg-param-months=(\d)", message["raw"])
+    parsed = re.search(r"display-name=(\w+);.*;msg-id=sub;.*msg-param-months=(\d+)", message["raw"])
     if parsed:
         username = parsed.group(1)
         months = int(parsed.group(2).rstrip())
@@ -80,14 +80,18 @@ def record_bits(message):
         log.close()
 
 def announce_raid(message):
-    parsed = re.search(r"display-name=(\w+);.*;msg-id=raid;.*msg-param-viewerCount=(\d)", message["raw"])
+    parsed = re.search(r"display-name=(\w+);.*;msg-id=raid;.*msg-param-viewerCount=(\d+);.*;user-id=(\d+)", message["raw"], re.DOTALL)
     if parsed:
         username = parsed.group(1)
         viewers = int(parsed.group(2))
+        user_id = int(parsed.group(3))
 
         user = twitchuser.repository.findByUsername(username)
         user.gold = user.gold + (100 * viewers)
         session.add(user)
         session.commit()
 
-        return f"{username} is raiding with {viewers} viewers! Show some love and check them out some time!"
+        stream = twitch_http_client.channels.get_by_id(user_id)
+        game = stream.game
+
+        return f"{username} was playing \"{game}\" and is raiding with {viewers} viewers! Show some love and check them out some time! https://twitch.tv/{username}"
