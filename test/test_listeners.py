@@ -70,7 +70,7 @@ class TestListeners(unittest.TestCase):
                 handle = m()
                 handle.write.assert_called_once_with('testuser\r')
 
-    def test_record_bits(self):
+    def test_announce_raid(self):
         with mock.patch("dragonmanbot.twitchuser.TwitchUserRepository.findByUsername") as mocked_return:
             mocked_return.return_value = twitchuser.TwitchUser(username="testuser", gold=100)
             message = "@badges=premium/1;color=#00FF7F;display-name=testuser;emotes=;flags=;id=7532d5b2-ddeb-4e85-992a-999999999999;login=testuser;mod=0;msg-id=raid;msg-param-displayName=testuser;msg-param-login=testuser;msg-param-profileImageURL=https://static-cdn.jtvnw.net/jtv_user_pictures/85896964-219d-4a32-837e-999999999999-profile_image-70x70.jpg;msg-param-viewerCount=7;room-id=68573026;subscriber=0;system-msg=7\sraiders\sfrom\testuser\shave\sjoined\n!;tmi-sent-ts=1547441871162;turbo=0;user-id=999999;user-type= :tmi.twitch.tv USERNOTICE #dragonmantank"
