@@ -78,3 +78,16 @@ def record_bits(message):
         log = open("latest_bits.txt", "w")
         log.write(user.username + "\r")
         log.close()
+
+def announce_raid(message):
+    parsed = re.search(r"display-name=(\w+);.*;msg-id=raid;.*msg-param-viewerCount=(\d)", message["raw"])
+    if parsed:
+        username = parsed.group(1)
+        viewers = int(parsed.group(2))
+
+        user = twitchuser.repository.findByUsername(username)
+        user.gold = user.gold + (100 * viewers)
+        session.add(user)
+        session.commit()
+
+        return f"{username} is raiding with {viewers} viewers! Show some love and check them out some time!"
